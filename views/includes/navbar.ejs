@@ -1,23 +1,30 @@
 <style>
-  .btn-search{
+  .btn-search {
     background-color: red;
     color: white;
     border-radius: 25px;
-    padding: 0 1rem 0 1rem;
+    padding: 0 1rem;
+    display: flex;
+    align-items: center; /* Aligns icon and text properly */
+    gap: 0.5rem; /* Adds space between icon and text */
+    border: none;
   }
-  .btn-search:hover{
-    background-color: red;
+
+  .btn-search:hover {
+    background-color: darkred;
     color: white;
   }
-  .btn-search i{
-    display: inline;
-    margin-right: 0.5rem;
+
+  .btn-search i {
+    display: inline-block; /* Ensures the icon stays inline */
+    margin: 0;
+    font-size: 1rem; /* Adjusts icon size */
   }
-  .search-inp{
+
+  .search-inp {
     border-radius: 25px;
-    padding: 0.5rem 3rem 0.5rem 3rem;
+    padding: 0.5rem 3rem;
   }
-    
 </style>
 <nav class="navbar navbar-expand-md bg-body-tertiary border-bottom sticky-top">
   <div class="container-fluid">
@@ -37,14 +44,19 @@
         <a class="nav-link" href="/listings">Explore</a>
       </div>
       <div class="navbar-nav ms-auto">
-        <form class="d-flex" role="search">
+        <form class="d-flex" action="/listings/search" method="GET">
           <input
             class="form-control me-2 search-inp"
             type="search"
-            placeholder="Search Destination"
+            name="query"
+            placeholder="Search by Title, Location, or Country"
+            required
           />
-          <button class="btn btn-search" type="submit"><i class="fa-solid fa-magnifying-glass-location"></i>Search</button>
-        </form>
+          <button class="btn btn-search" type="submit">
+            <i class="fa-solid fa-magnifying-glass-location"></i> Search
+          </button>
+        </form>        
+        
       </div>
       <div class="navbar-nav ms-auto">
         <a class="nav-link" href="/listings/new">Add new Listing</a>

@@ -15,6 +15,15 @@
     align-items: center;
     margin-right: 2rem;
     opacity: 0.7;
+    transition: opacity 0.3s ease-in-out;
+  }
+  .filter a {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-decoration: none;
+    color: inherit;
   }
   .filter:hover {
     opacity: 1;
@@ -27,7 +36,7 @@
   .tax-display {
     display: none;
   }
-  .tax-toggle{
+  .tax-toggle {
     border: 1px solid black;
     border-radius: 1rem;
     height: 3.5rem;
@@ -37,70 +46,52 @@
 </style>
 <div id="filters">
   <div class="filter">
-    <div>
-      <i class="fa-solid fa-fire"></i>
-    </div>
-    <p>trending</p>
+    <a href="/listings/filter?category=Rooms">
+      <div><i class="fa-solid fa-bed"></i></div>
+      <p>Rooms</p>
+    </a>
   </div>
   <div class="filter">
-    <div>
-      <i class="fa-solid fa-bed"></i>
-    </div>
-    <p>Rooms</p>
+    <a href="/listings/filter?category=Iconic Cities">
+      <div><i class="fa-solid fa-city"></i></div>
+      <p>Iconic Cities</p>
+    </a>
   </div>
   <div class="filter">
-    <div>
-      <i class="fa-solid fa-city"></i>
-    </div>
-    <p>Iconic Cities</p>
+    <a href="/listings/filter?category=Mountains">
+      <div><i class="fa-solid fa-mountain"></i></div>
+      <p>Mountains</p>
+    </a>
   </div>
   <div class="filter">
-    <div>
-      <i class="fa-solid fa-mountain"></i>
-    </div>
-    <p>Mountains</p>
+    <a href="/listings/filter?category=Castle">
+      <div><i class="fa-brands fa-fort-awesome"></i></div>
+      <p>Castle</p>
+    </a>
   </div>
   <div class="filter">
-    <div>
-      <i class="fa-brands fa-fort-awesome"></i>
-    </div>
-    <p>Castle</p>
+    <a href="/listings/filter?category=Amazing Pools">
+      <div><i class="fa-solid fa-person-swimming"></i></div>
+      <p>Amazing Pools</p>
+    </a>
   </div>
   <div class="filter">
-    <div>
-      <i class="fa-solid fa-person-swimming"></i>
-    </div>
-    <p>Amazing Pools</p>
+    <a href="/listings/filter?category=Camping">
+      <div><i class="fa-solid fa-campground"></i></div>
+      <p>Camping</p>
+    </a>
   </div>
   <div class="filter">
-    <div>
-      <i class="fa-solid fa-campground"></i>
-    </div>
-    <p>Camping</p>
+    <a href="/listings/filter?category=Farms">
+      <div><i class="fa-solid fa-cow"></i></div>
+      <p>Farms</p>
+    </a>
   </div>
   <div class="filter">
-    <div>
-      <i class="fa-solid fa-cow"></i>
-    </div>
-    <p>Farms</p>
-  </div>
-  <div class="filter">
-    <div>
-      <i class="fa-solid fa-person-skiing"></i>
-    </div>
-    <p>Arctic</p>
-  </div>
-  <div class="filter">
-    <div>
-      <i class="fa-solid fa-city"></i>
-    </div>
-    <p>Iconic Cities</p>
-  </div>
-  <div class="filter">
-    <div>
-      <i class="fa-solid fa-mountain"></i>
-    </div>
-    <p>Mountains</p>
+    <a href="/listings/filter?category=Arctic">
+      <div><i class="fa-solid fa-person-skiing"></i></div>
+      <p>Arctic</p>
+    </a>
   </div>
   <div class="tax-toggle">
     <div class="form-check form-switch form-check-reverse">
@@ -117,7 +108,9 @@
   </div>
 </div>
 <div class="row row-cols-lg-3 row row-cols-md-2 row row-cols-sm-1 mt-3">
-  <% for(let list of alllistings){ %>
+  <% if (alllistings.length === 0) { %>
+  <p>No listings found for this location.</p>
+  <% } else { %> <% for(let list of alllistings){ %>
   <a href="/listings/<%= list._id %>" class="listing-link">
     <div class="listing-card card col">
       <img
@@ -126,17 +119,20 @@
         alt="..."
         style="height: 20rem"
       />
-      <div class="card-img-overlay"></div>
       <div class="card-body">
         <p class="card-text">
-          <b><%= list.title %><br /></b>
-          &#8377; <%= list.price.toLocaleString("en-IN") %> / Night
-          <i class="tax-display"> &nbsp; + 18% GST taxes</i>
+          <b><%= list.title %></b> <br />
+          <%= list.location %> <br />
+          &#8377;
+          <span class="listing-price" data-original="<%= list.price %>">
+            <%= list.price.toLocaleString("en-IN") %>
+          </span>
+          / Night
         </p>
       </div>
     </div>
   </a>
-  <% } %>
+  <% } %> <% } %>
 </div>
 
 <script>
@@ -145,12 +141,28 @@
     console.log("clicked");
     let taxInfo = document.getElementsByClassName("tax-display");
     for (info of taxInfo) {
-      if(info.style.display == "inline"){
+      if (info.style.display == "inline") {
         info.style.display = "none";
-      }else{
+      } else {
         info.style.display = "inline";
       }
-        
     }
   });
+  document.addEventListener("DOMContentLoaded", function () {
+    const toggleSwitch = document.getElementById("flexSwitchCheckDefault");
+    const listingPrices = document.querySelectorAll(".listing-price");
+
+    toggleSwitch.addEventListener("change", function () {
+      listingPrices.forEach(priceEl => {
+        let originalPrice = parseFloat(priceEl.dataset.original);
+        if (this.checked) {
+          let gstPrice = (originalPrice * 1.18).toFixed(2); // Add 18% GST
+          priceEl.textContent = parseFloat(gstPrice).toLocaleString("en-IN");
+        } else {
+          priceEl.textContent = parseFloat(originalPrice).toLocaleString("en-IN"); // Revert to original
+        }
+      });
+    });
+  });
 </script>
+

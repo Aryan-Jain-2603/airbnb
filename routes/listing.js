@@ -17,6 +17,11 @@ router
     wrapAsnyc(ListingController.addListing)
   );
 
+router.get("/filter", wrapAsnyc(ListingController.filterListings));
+
+router.get("/search", wrapAsnyc(ListingController.searchListings));
+
+
 router.get("/new", isLoggedIn, (req, res) => {
   res.render("./listings/new.ejs");
 });
